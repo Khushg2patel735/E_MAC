@@ -1,0 +1,68 @@
+CAPI=2:
+name: celare:t10_verif:axi_lite_master_vip:1.0.0
+description: axi lite master VIP
+
+parameters:
+   UVM_TESTNAME:
+      datatype: str
+      description: Specify the name of the test to run
+      paramtype: plusarg
+      default: "axil_base_test"
+   UVM_SEED:
+      datatype: int
+      description: Specify the seed for the current test
+      paramtype: plusarg
+      default: 5
+filesets:
+   rtl:
+      files:
+         - ENV/MASTER_AGENT/axil_master_agent.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_config.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_defines.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_driver.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_monitor.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_seq_item.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_sequencer.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_base_sequence.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_if.sv: {is_include_file: true}
+         - ENV/MASTER_AGENT/axil_master_pkg.sv
+         - ENV/axil_defines.sv: {is_include_file: true}
+         - ENV/axil_env_pkg.sv
+         - ENV/axil_base_sequence.sv: {is_include_file: true}
+         - ENV/axil_env.sv: {is_include_file: true}
+         - ENV/axil_env_config.sv: {is_include_file: true}
+      file_type: systemVerilogSource
+   tests:
+      files:
+         - TEST/axil_test_pkg.sv
+         - TEST/axil_base_test.sv: {is_include_file: true}
+      file_type: systemVerilogSource
+   top:
+      files:
+         - TOP/axil_tb_top.sv
+      file_type: systemVerilogSource
+targets:
+   default: &default
+      filesets:
+         - rtl
+      toplevel: axil_tb_top
+   sim:
+      <<: *default
+      description : axi lite VIP simulation
+      default_tool: modelsim
+      toplevel: axil_tb_top
+      filesets_append:
+         - tests
+         - top
+      tools:
+         modelsim:
+            vlog_options:
+               - -timescale=1ns/1ns
+            vsim_options:
+               - -voptargs=+acc
+               - -l axi_lite_base_test.log
+               - +UVM_VERBOSITY=UVM_DEBUG 
+               - +UVM_CONFIG_DB_TRACE
+      parameters: 
+         - UVM_TESTNAME
+         - UVM_SEED

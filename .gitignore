@@ -1,0 +1,13 @@
+work/
+transcript
+vsim.wlf
+*.wlf
+*.vcd
+*.fst
+*.ucdb
+*.tmp
+*.bak
+*.log
+*.vstf
+*.jou
+*.pb
